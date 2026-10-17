@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MicroPlanting</title><meta name="theme-color" content="#0b2a1c"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon.svg"><link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js" defer></script></head><body>
+<div id="offline" hidden>Offline — showing app shell only. Live data is unavailable.</div>
+<div id="update" hidden>New version available. <button id="reload" class="btn sm">Update</button></div>
+<main id="auth" class="auth">
+ <section class="art" aria-hidden="true"><svg viewBox="0 0 300 360"><path class="stem" d="M150 340C150 260 150 200 150 120" /><path class="leaf l1" d="M150 250C150 190 105 160 55 165c0 60 40 85 95 85Z"/><path class="leaf l2" d="M150 190c0-55 40-85 95-85 0 55-38 85-95 85Z"/><path class="leaf l3" d="M150 130c0-35 25-55 55-55 0 35-22 55-55 55Z"/></svg>
+ <h2>Smart plants.<br>A greener tomorrow.</h2></section>
+ <form id="authForm" class="panel" novalidate><h1>MicroPlanting</h1><p id="authMode" class="muted">Sign in to your dashboard</p>
+  <label for="email">Email</label><input id="email" type="email" autocomplete="email" required>
+  <label for="pw">Password</label><div class="pwrow"><input id="pw" type="password" autocomplete="current-password" minlength="6" required><button type="button" id="showpw" class="btn ghost" aria-label="Show password">Show</button></div>
+  <p id="authMsg" role="alert" class="msg"></p>
+  <button class="btn" id="authGo">Sign in</button>
+  <div class="row"><button type="button" class="link" id="toggleMode">Create an account</button><button type="button" class="link" id="forgot">Forgot password?</button></div></form>
+</main>
+<div id="app" hidden>
+<header class="top"><div class="brand"><img src="icon.svg" alt="" width="28" height="28"> MicroPlanting</div>
+ <div class="pills"><span class="pill" id="pDev">ESP32: —</span><span class="pill" id="pFb">Firebase: —</span><span class="pill" id="pLast">Last update: —</span><span class="pill" id="clock"></span></div>
+ <button class="btn ghost" id="tabSet">Settings</button><button class="btn ghost" id="logout">Sign out</button></header>
+<div id="fbErr" class="banner err" hidden></div>
+<section id="emerg" class="emerg" aria-live="assertive"></section>
+<section class="grid" id="cards"></section>
+<section class="panel"><div class="row"><h2>Live trends</h2><div class="row"><select id="metric" aria-label="Metric"><option value="temp">Temperature °C</option><option value="hum">Air humidity %</option><option value="soil">Soil moisture % (approx)</option><option value="gas">Gas sensor ADC</option></select>
+<select id="range" aria-label="Range"><option value="15">15 min</option><option value="60" selected>1 hour</option><option value="360">6 hours</option><option value="1440">24 hours</option></select>
+<button class="btn ghost sm" id="pause">Pause</button><button class="btn ghost sm" id="clearH">Clear view</button></div></div>
+<div class="chartbox"><canvas id="chart"></canvas><p id="chartEmpty" class="muted empty">Waiting for real readings…</p></div>
+<p class="muted small">History is kept in this browser session only (from real Firebase updates). It is lost on refresh. "Clear view" never deletes Firebase data.</p></section>
+<section class="two"><div class="panel"><h2>Plant care (rule-based)</h2><ul id="care" class="list"></ul></div>
+<div class="panel"><div class="row"><h2>Event log</h2><select id="evf" aria-label="Filter"><option value="">All</option><option>warning</option><option>normal</option><option>device</option><option>system</option></select></div><ul id="events" class="list"><li class="muted">No events yet.</li></ul></div></section>
+<section class="panel info"><h2>Integrations</h2><p class="muted">SMS alerts are sent by the ESP32 to the SMSGate Android Local Server on your network — never by this website, which cannot confirm SMS delivery. This dashboard is <b>status only</b>: it sends no commands to the pump, servo or buzzer.</p></section>
+<dialog id="settings"><form method="dialog" class="panel"><h2>Settings</h2>
+<button type="button" class="btn" id="audioOn">Enable audio</button>
+<label>Volume <input type="range" id="vol" min="0" max="1" step="0.05"></label>
+<label><input type="checkbox" id="music"> Ambient music</label><label><input type="checkbox" id="alertSnd" checked> Emergency alert sound</label><label><input type="checkbox" id="mute"> Mute dashboard sound</label>
+<button type="button" class="btn ghost" id="install" hidden>Install app</button>
+<p class="muted small">Thresholds: temperature &gt; 35 °C or gas ADC &gt; 1000. Gas is a raw ADC value, not ppm. Soil % is approximate (uncalibrated). Freshness uses when this browser last saw new data, because timestamp_ms is a device tick counter. Version 1.0.</p>
+<pre id="diag" class="small"></pre><button class="btn">Close</button></form></dialog>
+</div>
+<script type="module" src="script.js"></script></body></html>
